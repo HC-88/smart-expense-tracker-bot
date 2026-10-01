@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Expense Tracker Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>💰 Smart Expense Tracker</h1>
+
+        <!-- Budget & Alerts Section -->
+        {% if alert %}
+            <div class="alert-box">{{ alert }}</div>
+        {% endif %}
+
+        <div class="summary-cards">
+            <div class="card">
+                <h3>Monthly Budget</h3>
+                <p>${{ monthly_budget }}</p>
+            </div>
+            <div class="card">
+                <h3>Total Spent (This Month)</h3>
+                <p class="spent-val">${{ monthly_spent }}</p>
+            </div>
+        </div>
+
+        <!-- Add Expense Form -->
+        <form action="/add" method="POST" class="expense-form">
+            <h3>Record New Expense</h3>
+            <input type="text" name="category" placeholder="Category (e.g. Food, Transport)" required>
+            <input type="number" name="amount" placeholder="Amount ($)" step="0.01" required>
+            <input type="date" name="date" required>
+            <button type="submit">Add Expense</button>
+        </form>
+
+        <!-- Category Breakdown Summary -->
+        <div class="category-summary">
+            <h3>📊 Category Breakdown (This Month)</h3>
+            <ul>
+                {% for cat, amt in category_summary.items() %}
+                    <li><span>{{ cat }}</span> <strong>${{ amt }}</strong></li>
+                {% else %}
+                    <p>No expenses recorded for this month yet.</p>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Recent Expenses List -->
+        <h2>Recent Transactions</h2>
+        <ul class="expense-list">
+            {% for exp in expenses %}
+                <li>
+                    <span>📅 {{ exp.get('Date') }} | 🏷️ <strong>{{ exp.get('Category') }}</strong></span> 
+                    <span class="amount">${{ exp.get('Amount') }}</span>
+                </li>
+            {% else %}
+                <p>No expenses found.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
